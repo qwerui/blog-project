@@ -5,7 +5,9 @@ const blogList = function BlogList(){
 
     return(
         <>
-
+            <div>
+                List
+            </div>
         </>
     )
 }

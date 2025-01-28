@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import 'css/main.css';
 
 import IndexPage from 'contents/index-page';
@@ -19,8 +19,9 @@ const main = function Main(){
                     <Route path='/' element={<IndexPage/>}/>
                     <Route path='/search/*' element={<Search/>}/>
                     <Route path='/blog' element={<Blog/>}>
-                        <Route path='list' element={<BlogList/>}/>
-                        <Route path='content' element={<BlogContent/>}/>
+                        <Route path='list/*' element={<BlogList/>}/>
+                        <Route path='content/*' element={<BlogContent/>}/>
+                        <Route index element={<Navigate to='/nopage'/>}/>
                     </Route>
                     <Route path='*' element={<NotFound/>}/>
                 </Routes>

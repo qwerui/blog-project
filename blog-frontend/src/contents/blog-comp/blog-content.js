@@ -4,7 +4,7 @@ const blogContent = function BlogContent(){
 
     return(
         <>
-
+            <div>Content</div>
         </>
     )
 }

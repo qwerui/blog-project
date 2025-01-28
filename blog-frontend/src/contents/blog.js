@@ -8,7 +8,9 @@ const blog = function Blog(){
     return(
         <>
             <BlogNav/>
-            <Outlet/>
+            <section className='w-75 bg-secondary d-inline-block h-100'>
+                <Outlet/>
+            </section>
         </>
     )
 }
