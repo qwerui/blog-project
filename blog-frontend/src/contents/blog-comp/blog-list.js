@@ -5,7 +5,7 @@ const blogList = function BlogList(){
 
     return(
         <>
-            <div>
+            <div style={{height: "200px", backgroundColor: "blue"}}>
                 List
             </div>
         </>
