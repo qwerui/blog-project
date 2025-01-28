@@ -22,6 +22,12 @@ const header = function Header() {
                             <li className="nav-item">
                                 <a className="nav-link active" aria-current="page" href="/">Home</a>
                             </li>
+                            <li className="nav-item">
+                                <a className="nav-link active" aria-current="page" href="/blog">My Blog</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link active" aria-current="page" href="/config">Config</a>
+                            </li>
                         </ul>
                         <form className="d-flex">
                             <button className="btn btn-success" type="button" onClick={()=>setShowLogin(true)}>로그인</button>
