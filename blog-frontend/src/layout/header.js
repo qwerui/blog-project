@@ -24,7 +24,7 @@ const header = function Header() {
                             </li>
                         </ul>
                         <form className="d-flex">
-                            <button className="btn btn-success" type="button" onClick={()=>setShowLogin(true)}>Login</button>
+                            <button className="btn btn-success" type="button" onClick={()=>setShowLogin(true)}>로그인</button>
                         </form>
                     </div>
                 </div>
