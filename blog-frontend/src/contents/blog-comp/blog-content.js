@@ -1,10 +1,17 @@
 import React from 'react';
 
-const blogContent = function BlogContent(){
+const blogContent = function BlogContent() {
 
-    return(
+    return (
         <>
-            <div>Content</div>
+            <article className='p-3'>
+                <h2>Title</h2>
+                <div className='text-end'>time</div>
+                <hr />
+                <div>
+                    Content
+                </div>
+            </article>
         </>
     )
 }
