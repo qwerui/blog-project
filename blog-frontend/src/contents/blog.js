@@ -9,7 +9,7 @@ const blog = function Blog() {
         <>
             <div id="blog-wrapper" className='h-100 d-flex'>
                 <BlogNav />
-                <section className='w-75 bg-secondary d-inline-block h-100'>
+                <section className='w-75 d-inline-block h-100'>
                     <Outlet />
                 </section>
             </div>
