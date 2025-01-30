@@ -8,6 +8,8 @@ import Blog from 'contents/blog';
 
 import BlogList from 'contents/blog-comp/blog-list';
 import BlogContent from 'contents/blog-comp/blog-content';
+import Config from 'contents/config';
+import Write from 'contents/write';
 
 import NotFound from './not-found';
 
@@ -23,6 +25,8 @@ const main = function Main(){
                         <Route path='content/*' element={<BlogContent/>}/>
                         <Route index element={<Navigate to='/nopage'/>}/>
                     </Route>
+                    <Route path='/config' element={<Config/>}/>
+                    <Route path='/Write' element={<Write/>}/>
                     <Route path='*' element={<NotFound/>}/>
                 </Routes>
             </BrowserRouter>
