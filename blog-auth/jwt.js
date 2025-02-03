@@ -5,8 +5,6 @@ export default class JwtService {
     jwks = null;
     privateKey = null;
     exp = null;
-    iss = null;
-    aud = null;
     
     constructor(alg, exp) {
         this.alg = alg;
@@ -42,10 +40,10 @@ export default class JwtService {
         }
     }
 
-    async GenerateToken(payload) {
+    async GenerateToken(payload, iss, aud) {
         this.VaildField();
 
-        if(this.privateKey == null) {
+        if(!this.privateKey) {
             throw new Error("Private Key Not Exists!");
         }
 

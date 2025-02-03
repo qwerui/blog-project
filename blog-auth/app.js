@@ -1,12 +1,38 @@
 import express from 'express'; // package.json에서 type: module을 설정하면 가능하다.
 import cookieParser from 'cookie-parser';
-import {body, validationResult} from 'express-validator';
+import {body, query, validationResult} from 'express-validator';
 import { scheduleJob } from 'node-schedule';
+import { v4 } from 'uuid';
+import { createClient } from 'redis';
+import cors from 'cors';
 
 import JwtService from './jwt.js';
+import memberService from './member-service.js';
 
 const app = express();
 const port = 8080;
+
+const redisClient = await createClient({url: 'redis://localhost:6379'})
+    .on('error', err => {
+        console.log('Redis Client Error', err);
+        process.exit(1);
+    })
+    .connect();
+
+memberService.init();
+
+// Redis 연결 해제 이벤트 등록
+process.on("SIGINT", async () => {
+    await redisClient.quit();
+    process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+    await redisClient.quit();
+    process.exit(0);
+});
+
+const dayof14 = 60 * 60 * 24 * 14;
 
 const accessService = new JwtService("RS256", "1h");
 const refreshService = new JwtService("RS256", "14d");
@@ -23,6 +49,7 @@ const refreshRotation = scheduleJob("0 0 0 * * 1", ()=>{
     refreshService.GenerateJwks();
 })
 
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
@@ -35,18 +62,35 @@ app.post("/auth/login",
         body("id").trim().notEmpty(),
         body("password").trim().notEmpty()
     ], 
-    (req, res)=>{
+    async (req, res)=>{
         const validation = validationResult(req);
 
         if(!validation.isEmpty()){
             res.status(400).send("Invalid Input");
+            return;
         }
 
-        const refreshToken = refreshService.GenerateToken();
+        try {
+            if(!memberService.checkLogin(req.body.id, req.body.password)) {
+                res.status(400).send("Login failed");
+                return;
+            }
+        } catch {
+            res.status(500).send("Error occured");
+            return;
+        }
+
+        // 로그인 성공 시 로직
+        const refreshToken = refreshService.GenerateToken({
+            rdk: v4() // 동일 시간에 의한 같은 토큰 반환 방지를 위한 랜덤 값
+        });
         const accessToken = accessService.GenerateToken();
+
+        await redisClient.set(req.body.id, refreshToken);
 
         res.cookie("refresh-token", refreshToken, {
             httpOnly: true,
+            maxAge: dayof14
             // https에서만 작동하게하는 쿠키, localhost 사용으로 인해 비활성화
             // secure: true
             // 3-tier-architecture에서 samesite 사용 시 None 이외에는 쿠키가 전송되지 않아 제거
@@ -71,31 +115,81 @@ app.post("/auth/signup",
 
         if(!validation.isEmpty()){
             res.status(400).send("Invalid Input");
+            return;
+        }
+
+        try {
+            memberService.insertMember(req.body);
+        } catch {
+            res.status(500).send("Error occured");
+            return;
         }
 
         res.send();
     }
 );
 
-app.post("/auth/refresh", (req, res)=>{
+app.get("/auth/check-id", [
+        query("id").trim().notEmpty()
+    ],
+    (req, res)=>{
+    
+    const validation = validationResult(req);
+
+    if(!validation.isEmpty()){
+        res.status(400).send("Invalid Input");
+        return;
+    }
+
+    try {
+        const exist = memberService.checkIdExists(req.query.id);
+
+        if(exist) {
+            res.send("Not Exist");
+        } else {
+            res.send("Exist");
+        }
+    } catch {
+        res.status(500).send("Error occured");
+    }
+});
+
+app.post("/auth/refresh", async (req, res)=>{
     const token = req.cookies.refreshToken;
 
     if(!token) {
-        res.send(400).send("Token is not exist");
+        res.status(400).send("Token is not exist");
     }
     try {
+        const refreshFromRedis = await redisClient.get(req.body.id);
+
+        if(refreshFromRedis != token) {
+            res.status(401).send("Token is not valid");
+            return;
+        }
+
         refreshService.ValidateToken(req.token);
     } catch {
-        res.send(401).send("Token is not valid");
+        res.status(401).send("Token is not valid");
+        return;
     }
 
-    // TODO : 기존 토큰을 Redis에 등록해 사용 불능으로 변경
-
-    const refreshToken = refreshService.GenerateToken();
+    const refreshToken = refreshService.GenerateToken({
+        rdk: v4() // 동일 시간에 의한 같은 토큰 반환 방지를 위한 랜덤 값
+    });
     const accessToken = accessService.GenerateToken();
+
+    try {
+        await redisClient.set(req.body.id, refreshToken);
+    } catch (err) {
+        console.log("Token set error : ", err);
+        res.status(500).send("Error occured while refreshing token");
+        return;
+    }
 
     res.cookie("refresh-token", refreshToken, {
         httpOnly: true,
+        maxAge: dayof14
         // https에서만 작동하게하는 쿠키, localhost 사용으로 인해 비활성화
         // secure: true
         // 3-tier-architecture에서 samesite 사용 시 None 이외에는 쿠키가 전송되지 않아 제거
