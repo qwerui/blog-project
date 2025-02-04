@@ -1,4 +1,7 @@
 import mysql from 'mysql2/promise';
+import bcrypt from 'bcrypt';
+
+const saltRounds = 10;
 
 export default {
     pool,
@@ -49,8 +52,11 @@ export default {
     },
 
     async insertMember(body) {
+
+        const hashedPassword = await bcrypt.hash(body.password, saltRounds);
+
         await this.transactionQuery(async (conn)=>{
-            await conn.query("INSERT INTO member VALUES(?, ?, ?)", [body.id, body.password, body.nickname]);
+            await conn.query("INSERT INTO member VALUES(?, ?, ?)", [body.id, hashedPassword, body.nickname]);
         });
     },
 
@@ -61,7 +67,7 @@ export default {
                 [id]
             );
 
-            return results[0].password == password;
+            return await bcrypt.compare(password, results[0].password);
         });
     }
     
