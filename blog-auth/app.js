@@ -10,7 +10,7 @@ import JwtService from './jwt.js';
 import memberService from './member-service.js';
 
 const app = express();
-const port = 8080;
+const port = 8081;
 
 const redisClient = await createClient({url: 'redis://localhost:6379'})
     .on('error', err => {
@@ -49,6 +49,9 @@ const refreshRotation = scheduleJob("0 0 0 * * 1", ()=>{
     refreshService.GenerateJwks();
 })
 
+const iss = "http://blog-auth";
+const aud = "http://blog-service";
+
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
@@ -84,7 +87,7 @@ app.post("/auth/login",
         const refreshToken = refreshService.GenerateToken({
             rdk: v4() // 동일 시간에 의한 같은 토큰 반환 방지를 위한 랜덤 값
         });
-        const accessToken = accessService.GenerateToken();
+        const accessToken = accessService.GenerateToken({}, iss, aud);
 
         await redisClient.set(req.body.id, refreshToken);
 
@@ -177,15 +180,9 @@ app.post("/auth/refresh", async (req, res)=>{
     const refreshToken = refreshService.GenerateToken({
         rdk: v4() // 동일 시간에 의한 같은 토큰 반환 방지를 위한 랜덤 값
     });
-    const accessToken = accessService.GenerateToken();
+    const accessToken = accessService.GenerateToken({}, iss, aud);
 
-    try {
-        await redisClient.set(req.body.id, refreshToken);
-    } catch (err) {
-        console.log("Token set error : ", err);
-        res.status(500).send("Error occured while refreshing token");
-        return;
-    }
+    await redisClient.set(req.body.id, refreshToken);
 
     res.cookie("refresh-token", refreshToken, {
         httpOnly: true,
@@ -196,6 +193,11 @@ app.post("/auth/refresh", async (req, res)=>{
     });
 
     res.send(accessToken);
+});
+
+app.use((err, req, res, next)=>{
+    console.log("Unexpected Error : ", err);
+    res.status(500).send("Error occured");
 });
 
 app.listen(port, ()=>{
