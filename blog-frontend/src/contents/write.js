@@ -12,10 +12,25 @@ const blogWrite = function BlogWrite() {
         console.log(quillRef.current.getSemanticHTML());
     }
 
+    const [category, setCategory] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState({});
+
     return (
         <>
             <h1>글쓰기</h1>
             <hr />
+            <h3>카테고리</h3>
+            <div className="dropdown">
+                <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {selectedCategory.name ? selectedCategory.name : "카테고리"}
+                </button>
+                <ul className="dropdown-menu">
+                    {category.map(item=>{return (
+                        <li className="dropdown-item" onClick={()=>setSelectedCategory(item)}>{item.name}</li>
+                    )})}
+                </ul>
+            </div>
+            <hr/>
             <Editor
                 ref={quillRef}
             />
