@@ -1,4 +1,5 @@
 import * as jose from 'jose';
+import { v7 } from 'uuid';
 
 export default class JwtService {
     alg = null;
@@ -28,15 +29,21 @@ export default class JwtService {
         const { publicKey, privateKey } = await jose.generateKeyPair(this.alg);
 
         const publicJWK = await jose.exportJWK(publicKey);
+        const kid = v7();
+        publicJWK.kid = kid;
+        const privateKeyObj = {
+            kid: kid,
+            key: privateKey
+        }
         
         // Jwks 로테이션을 위한 코드
         if(this.jwks == null) {
             this.jwks = {keys:[publicJWK]};
-            this.privateKey = [privateKey];
+            this.privateKey = [privateKeyObj];
         }
         else {
             this.jwks = { keys: [publicJWK, this.jwks.keys[0]] };
-            this.privateKey = [privateKey, this.privateKey[0]];
+            this.privateKey = [privateKeyObj, this.privateKey[0]];
         }
     }
 
@@ -48,25 +55,27 @@ export default class JwtService {
         }
 
         const jwtPlan = new jose.SignJWT(payload)
-        .setProtectedHeader({ alg: this.alg })
+        .setProtectedHeader({ alg: this.alg, kid: this.privateKey[0].kid })
         .setIssuedAt()
         .setExpirationTime(this.exp);
 
-        if(iss) {
-            jwtPlan.setIssuer(this.iss);
+        if(iss !== false) {
+            jwtPlan.setIssuer(iss);
         }
 
-        if(aud) {
-            jwtPlan.setAudience(this.aud);
+        if(aud !== false) {
+            jwtPlan.setAudience(aud);
         }
         
-        const jwt = await jwtPlan.sign(this.privateKey[0]);
+        const jwt = await jwtPlan.sign(this.privateKey[0].key);
 
         return jwt;
     }
 
     async ValidateToken(token) {
-        const {payload, protectedHeader} = await jose.jwtVerify(token, jwks);
+        const header = jose.decodeProtectedHeader(token);
+        const privateKey = this.privateKey.find(item => item.kid === header.kid);
+        const {payload, protectedHeader} = await jose.jwtVerify(token, privateKey.key);
         return {payload: payload, protectedHeader: protectedHeader};
     }
 }
