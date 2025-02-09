@@ -8,10 +8,11 @@ const blogWrite = function BlogWrite() {
     // Use a ref to access the quill instance directly
     const quillRef = useRef();
 
-    const uploadArticle = ()=>{
+    const uploadArticle = () => {
         console.log(quillRef.current.getSemanticHTML());
     }
 
+    const [title, setTitle] = useState("");
     const [category, setCategory] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState({});
 
@@ -19,23 +20,32 @@ const blogWrite = function BlogWrite() {
         <>
             <h1>글쓰기</h1>
             <hr />
-            <h3>카테고리</h3>
-            <div className="dropdown">
-                <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    {selectedCategory.name ? selectedCategory.name : "카테고리"}
-                </button>
-                <ul className="dropdown-menu">
-                    {category.map(item=>{return (
-                        <li className="dropdown-item" onClick={()=>setSelectedCategory(item)}>{item.name}</li>
-                    )})}
-                </ul>
+            <div className='d-flex justify-content-between'>
+                <div className='d-flex'>
+                    <div className="dropdown">
+                        <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {selectedCategory.name ? selectedCategory.name : "카테고리"}
+                        </button>
+                        <ul className="dropdown-menu">
+                            {category.map(item => {
+                                return (
+                                    <li className="dropdown-item" onClick={() => setSelectedCategory(item)}>{item.name}</li>
+                                )
+                            })}
+                        </ul>
+                    </div>
+                </div>
+
+                <button className='btn btn-primary' onClick={() => uploadArticle()}>글쓰기</button>
             </div>
-            <hr/>
+            <div>
+                제목<input className='form-control' value={title} onChange={(e)=>setTitle(e.target.value)}/>
+            </div>
+
+            <hr />
             <Editor
                 ref={quillRef}
             />
-            <hr/>
-            <button className='btn btn-primary w-100 mb-5' onClick={()=>uploadArticle()}>글쓰기</button>
         </>
     )
 }

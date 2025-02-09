@@ -1,13 +1,14 @@
 import mysql from 'mysql2/promise';
 import bcrypt from 'bcrypt';
+import { v7 } from 'uuid';
 
 const saltRounds = 10;
 
 export default {
-    pool,
+    pool: null,
 
     init() {
-        pool = mysql.createPool({
+        this.pool = mysql.createPool({
             host: "localhost",
             port: 3306,
             user: "root",
@@ -21,8 +22,9 @@ export default {
 
         try {
             await conn.beginTransaction();
-            await callback(conn);
+            const result = await callback(conn);
             await conn.commit();
+            return result;
         } catch (err) {
             console.log("DB Error : ", err);
             await conn.rollback();
@@ -33,7 +35,7 @@ export default {
     },
     async normalQuery(callback){
         try {
-            return await callback();
+            return await callback(this.pool);
         } catch (err) {
             console.log("DB Error : ", err);
             throw err;
@@ -41,13 +43,13 @@ export default {
     },
 
     async checkIdExists(id) {
-        return await this.normalQuery(async ()=>{
-            const [results, fields] = await this.pool.query(
+        return await this.normalQuery(async (pool)=>{
+            const [results, fields] = await pool.query(
                 "SELECT 1 FROM member WHERE id = ?",
                 [id]
             );
     
-            return results.length;
+            return results.length > 0;
         });
     },
 
@@ -56,13 +58,14 @@ export default {
         const hashedPassword = await bcrypt.hash(body.password, saltRounds);
 
         await this.transactionQuery(async (conn)=>{
-            await conn.query("INSERT INTO member VALUES(?, ?, ?)", [body.id, hashedPassword, body.nickname]);
+            await conn.query("INSERT INTO member VALUES(?, ?, ?)", [body.id, body.nickname, hashedPassword]);
+            await conn.query("INSERT INTO blog(blog_id, id) VALUES(?, ?)", [v7(), body.id]);
         });
     },
 
     async checkLogin(id, password) {
-        return await this.normalQuery(async ()=>{
-            const [results, fields] = await this.pool.query(
+        return await this.normalQuery(async (pool)=>{
+            const [results, fields] = await pool.query(
                 "SELECT password FROM member WHERE id = ?",
                 [id]
             );

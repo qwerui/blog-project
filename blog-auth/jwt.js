@@ -43,7 +43,7 @@ export default class JwtService {
     async GenerateToken(payload, iss, aud) {
         this.VaildField();
 
-        if(!this.privateKey) {
+        if(!this.privateKey || this.privateKey.length == 0) {
             throw new Error("Private Key Not Exists!");
         }
 
@@ -60,7 +60,7 @@ export default class JwtService {
             jwtPlan.setAudience(this.aud);
         }
         
-        const jwt = await jwtPlan.sign(this.privateKey);
+        const jwt = await jwtPlan.sign(this.privateKey[0]);
 
         return jwt;
     }
