@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 import express from 'express';
-import db from './db';
+import db from './db.js';
 import { DateTime } from 'luxon';
 import { v7 } from 'uuid';
 

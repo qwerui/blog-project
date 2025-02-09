@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 import express from 'express';
-import db from './db';
+import db from './db.js';
 
 import {body, query, validationResult} from 'express-validator';
 

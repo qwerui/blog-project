@@ -3,11 +3,11 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import * as jose from 'jose';
 
-import db from "./services/db";
+import db from "./services/db.js";
 
-import configRouter from './services/config-service';
-import writeRouter from './services/write-service';
-import blogRouter from './services/blog-service';
+import configRouter from './services/config-service.js';
+import writeRouter from './services/write-service.js';
+import blogRouter from './services/blog-service.js';
 
 db.init();
 
@@ -23,7 +23,12 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded());
 
-app.use("/api/secure", async (req, res, next) => {
+app.use(async (req, res, next) => {
+    if(req.method == "GET"){
+        next();
+        return;
+    }
+
     const jwt = req.body.accessToken;
 
     if(!jwt) {

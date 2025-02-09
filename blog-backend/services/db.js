@@ -1,10 +1,10 @@
 import mysql from 'mysql2/promise';
 
 export default {
-    pool,
+    pool: null,
 
     init() {
-        pool = mysql.createPool({
+        this.pool = mysql.createPool({
             host: "localhost",
             port: 3306,
             user: "root",
@@ -31,7 +31,7 @@ export default {
     },
     async normalQuery(callback){
         try {
-            return await callback(pool);
+            return await callback(this.pool);
         } catch (err) {
             console.log("DB Error : ", err);
             throw err;
