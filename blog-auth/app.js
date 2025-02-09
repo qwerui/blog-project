@@ -12,7 +12,10 @@ import memberService from './member-service.js';
 const app = express();
 const port = 8081;
 
-const redisClient = await createClient({url: 'redis://localhost:6379'})
+const redisClient = await createClient({
+    url: 'redis://localhost:6379', 
+    password: 'tokenpass',
+    })
     .on('error', err => {
         console.log('Redis Client Error', err);
         process.exit(1);
@@ -21,14 +24,16 @@ const redisClient = await createClient({url: 'redis://localhost:6379'})
 
 memberService.init();
 
-// Redis 연결 해제 이벤트 등록
+// DB 연결 해제 이벤트 등록
 process.on("SIGINT", async () => {
     await redisClient.quit();
+    await memberService.pool.end();
     process.exit(0);
 });
 
 process.on("SIGTERM", async () => {
     await redisClient.quit();
+    await memberService.pool.end();
     process.exit(0);
 });
 
@@ -84,10 +89,12 @@ app.post("/auth/login",
         }
 
         // 로그인 성공 시 로직
-        const refreshToken = refreshService.GenerateToken({
+        const refreshToken = await refreshService.GenerateToken({
             rdk: v4() // 동일 시간에 의한 같은 토큰 반환 방지를 위한 랜덤 값
         });
-        const accessToken = accessService.GenerateToken({}, iss, aud);
+        const accessToken = await accessService.GenerateToken({
+            id: req.body.id
+        }, iss, aud);
 
         await redisClient.set(req.body.id, refreshToken);
 
@@ -107,9 +114,6 @@ app.post("/auth/signup",
     [
         body("id").trim().notEmpty(),
         body("password").trim().notEmpty(),
-        body("repeat").custom((value, { req }) => {
-            return value === req.body.password;
-        }),
         body("nickname").trim().notEmpty(),
 
     ],
@@ -180,7 +184,9 @@ app.post("/auth/refresh", async (req, res)=>{
     const refreshToken = refreshService.GenerateToken({
         rdk: v4() // 동일 시간에 의한 같은 토큰 반환 방지를 위한 랜덤 값
     });
-    const accessToken = accessService.GenerateToken({}, iss, aud);
+    const accessToken = accessService.GenerateToken({
+        id: req.body.id
+    }, iss, aud);
 
     await redisClient.set(req.body.id, refreshToken);
 
