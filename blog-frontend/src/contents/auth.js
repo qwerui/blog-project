@@ -26,7 +26,7 @@ export const Login = ({ show, close, toSignUp }) => {
         const response = await axios.post(config["auth-backend"]+"/auth/login",{
             id: formData.get("id"),
             password: formData.get("password"),
-        });
+        }, {withCredentials:true});
         
         dispatch(login({
             token: response.data,

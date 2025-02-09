@@ -8,6 +8,9 @@ const blogNav = function BlogNav() {
     return (
         <>
             <aside className='w-25 d-inline-block h-100 p-3'>
+                <div id="blog-title" className='border mb-2'>
+                    <h5 className='text-center'>블로그 제목</h5>
+                </div>
                 <div id="blog-profile-image" className='d-flex justify-content-center'>
                     <img className='border border-3' style={{height: "200px", width: "200px"}} src={profile ? profile : "/logo512.png"} alt='profile'/>
                 </div>
