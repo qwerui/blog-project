@@ -21,7 +21,7 @@ const refreshToken = async () => {
         if (exp < Math.floor(Date.now() / 1000)){
             const newToken = await axios.post(config["auth-backend"]+"/auth/refresh",{id:loginId},{withCredentials: true});
 
-            store.dispatch(refresh(newToken));
+            store.dispatch(refresh(newToken.data));
         }
     } catch (error) {
         console.error("Token refresh error : ", error);
