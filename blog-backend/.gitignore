@@ -160,4 +160,7 @@ dist
 .history
 .ionide
 
+# Ingore static
+/public/*
+
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,node
