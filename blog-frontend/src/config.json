@@ -1,4 +1,4 @@
 {
     "auth-backend": "https://localhost:8081",
-    "blog-backend": "http://localhost:8080"
+    "blog-backend": "https://localhost:8080"
 }
