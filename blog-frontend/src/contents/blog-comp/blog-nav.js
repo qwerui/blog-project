@@ -26,11 +26,13 @@ const blogNav = function BlogNav() {
                 }
             });
 
-            setTitle(response.data.title);
-            setProfile(config["blog-backend"]+response.data.image);
+            setTitle(response.data.title ?? response.data.nickname+"의 블로그");
+            setProfile(response.data.image !== null ? config["blog-backend"]+response.data.image : "/logo512.png");
             setNickname(response.data.nickname);
-            setDescription(response.data.description);
+            setDescription(response.data.description ?? response.data.nickname+"의 블로그입니다.");
             setCategory(response.data.category);
+
+            console.log(response.data);
         }
         fetch();
     }, [location.pathname]);
@@ -38,14 +40,11 @@ const blogNav = function BlogNav() {
     return (
         <>
             <aside className='w-25 d-inline-block h-100 p-3'>
-<<<<<<< Updated upstream
-=======
                 <div id="blog-title" className='border mb-2'>
                     <h5 className='text-center'>{title}</h5>
                 </div>
->>>>>>> Stashed changes
                 <div id="blog-profile-image" className='d-flex justify-content-center'>
-                    <img className='border border-3' style={{height: "200px", width: "200px"}} src={profile ? profile : "/logo512.png"} alt='profile'/>
+                    <img className='border border-3' style={{height: "200px", width: "200px"}} src={profile} alt='profile'/>
                 </div>
                 <div id="blog-owner-description" className='border mt-1'>
                     <h5 className="text-center mt-2">{nickName}</h5>

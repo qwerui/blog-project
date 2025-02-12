@@ -216,8 +216,7 @@ app.post("/auth/refresh", async (req, res)=>{
 
 app.delete("/auth/logout", 
     [
-        body("accessToken").trim().notEmpty(),
-        body("id").trim().notEmpty()
+        query("id").trim().notEmpty()
     ],
     async (req, res)=>{
         const validation = validationResult(req);
@@ -228,8 +227,8 @@ app.delete("/auth/logout",
         }
 
         try {
-            await accessService.ValidateToken(req.body.accessToken);
-            await redisClient.set(req.body.id, "");
+            await accessService.ValidateToken(req.header("Authorization"));
+            await redisClient.set(req.query.id, "");
         } catch {
             res.status(401).send("Token is not valid");
             return;

@@ -36,18 +36,17 @@ const blogList = function BlogList() {
                         page: page.current
                     }
                 });
-
                 setListOption(response.data.articles);
                 totalPage.current = response.data.totalPage;
                 setPagination(getPaginationNumbers(page.current, totalPage.current));
             } catch (err) {
-                if (err.state === 404) {
+                if (err.status === 404) {
                     setIsEmpty(true);
                 }
             }
         }
         fetch();
-    }, [location]);
+    }, [location.pathname, location.search]);
 
     function getPaginationNumbers(currentPage, totalPages, maxVisiblePages = 5) {
         const half = Math.floor(maxVisiblePages / 2);
@@ -66,7 +65,7 @@ const blogList = function BlogList() {
                     <h3 className='ps-3 pt-2'>{categoryName}</h3>
                     <hr />
                     {
-                        isEmpty ?
+                        !isEmpty ?
                             <>
                                 <ul className="list-group">
                                     {listOption.map(item => <BlogListOption item={item} id={id.current} />)}

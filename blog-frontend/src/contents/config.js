@@ -1,23 +1,15 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Button, Form } from 'react-bootstrap';
-<<<<<<< Updated upstream
-=======
 import { useSelector } from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 import config from 'config.json';
 import refreshToken from 'util/token-refresh';
->>>>>>> Stashed changes
+import axios from 'axios';
 
 const blogConfig = function BlogConfig() {
 
     const [inputCategory, setInputCategory] = useState("");
     const [category, setCategory] = useState([]);
-<<<<<<< Updated upstream
-    
-    const addCategory = ()=>{
-        if(inputCategory.length > 0) {
-            setCategory([...category, inputCategory]);
-=======
     const [newCategory, setNewCategory] = useState([]);
     const [deleteCategory, setDeleteCategory] = useState([]);
     const [title, setTitle] = useState("");
@@ -53,7 +45,7 @@ const blogConfig = function BlogConfig() {
 
         const blogImage = formData.get("image");
 
-        refreshToken();
+        await refreshToken();
         
         try {
             await axios.put(config["blog-backend"] + "/api/config", {
@@ -88,22 +80,17 @@ const blogConfig = function BlogConfig() {
         if (inputCategory.length > 0) {
             setCategory([...category, {name:inputCategory}]);
             setNewCategory([...newCategory, inputCategory]);
->>>>>>> Stashed changes
             setInputCategory("");
         }
     }
 
-<<<<<<< Updated upstream
-    const removeCategory = (remove)=>{
-        setCategory(category.filter(item=>item !== remove));
-=======
+
     const removeCategory = (remove) => {
         setCategory(category.filter(item => item.name !== remove.name));
 
         if(remove.category_id != null){
             setDeleteCategory([...deleteCategory, remove.category_id]);
         }
->>>>>>> Stashed changes
     }
 
     return (
@@ -112,11 +99,11 @@ const blogConfig = function BlogConfig() {
             <Form>
                 <Form.Group className="mb-3" controlId="blogTitle">
                     <Form.Label>블로그 제목</Form.Label>
-                    <Form.Control type="text" placeholder="제목을 입력해주세요" />
+                    <Form.Control type="text" value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="제목을 입력해주세요" />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="blogDescription">
                     <Form.Label>블로그 설명</Form.Label>
-                    <Form.Control as="textarea" rows={3} placeholder="블로그의 간단 설명" />
+                    <Form.Control as="textarea" value={description} onChange={(e)=>setDescription(e.target.value)} rows={3} placeholder="블로그의 간단 설명" />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="blogPicture">
                     <Form.Label>블로그 프로필 사진</Form.Label>
@@ -133,14 +120,14 @@ const blogConfig = function BlogConfig() {
                 <ul class="list-group">
                     {category.map(item=>{return(
                     <li class="list-group-item d-flex justify-content-between">
-                        <span className='fs-4'>{item}</span>
+                        <span className='fs-4'>{item.name}</span>
                         <button type="button" className="btn btn-danger" onClick={()=>removeCategory(item)}>삭제</button>
                     </li>
                 )})}    
                 </ul>
             </Form>
             <hr/>
-            <Button className='w-100'>저장</Button>
+            <Button className='w-100' onClick={updateConfig}>저장</Button>
         </>
     )
 }

@@ -50,7 +50,7 @@ const blogContent = function BlogContent() {
 
     const deleteArticle = async ()=>{
         try {
-            refreshToken();
+            await refreshToken();
             await axios.delete(config['blog-backend']+"/api/write", {
                 params:{
                     articleId: articleId.current

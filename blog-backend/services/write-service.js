@@ -28,7 +28,7 @@ router.post("/",
         }
 
         await db.transactionQuery(async (conn)=>{
-            await conn.query("INSERT INTO article(article_id, blog_id, title, category_id, content, create_time, deleted) VALUES(?, ?, ?, ?, ?, ?)",
+            await conn.query("INSERT INTO article(article_id, blog_id, title, category_id, content, create_time, deleted) VALUES(?, ?, ?, ?, ?, ?, ?)",
                 [v7(), req.body.blogId, req.body.title, req.body.category, req.body.content, DateTime.utc().toJSDate(), false]);
         });
 

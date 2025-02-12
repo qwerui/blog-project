@@ -9,7 +9,7 @@ const formatter = {
         same &= localArticle.getDate() === localNow.getDate();
 
         if(same) {
-            return `${localArticle.getHour()}:${localArticle.getMinute()}`;
+            return `${localArticle.getHours()}:${localArticle.getMinutes()}`;
         } else {
             return `${localArticle.getFullYear() === localNow.getFullYear() ? "" : localArticle.getFullYear()+"." }${localArticle.getMonth()+1}.${localArticle.getDate()}`;
         }

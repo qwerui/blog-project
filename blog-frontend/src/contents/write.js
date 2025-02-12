@@ -65,7 +65,7 @@ const blogWrite = function BlogWrite() {
         delta.ops.forEach(async op => {
             if (op.insert && op.insert.image) {
                 if (source === 'user') {
-                    refreshToken();
+                    await refreshToken();
                     const file = base64ToFile(op.insert.image, "imagefile");
 
                     try {
@@ -127,7 +127,7 @@ const blogWrite = function BlogWrite() {
 
     const updateArticle = async () => {
         try {
-            refreshToken();
+            await refreshToken();
             const cleanContent = DOMPurify.sanitize(quillRef.current.getSemanticHTML());
             await axios.put(config["blog-backend"] + "/api/write", {
                 articleId: articleId.current,
@@ -149,7 +149,7 @@ const blogWrite = function BlogWrite() {
 
     const createArticle = async () => {
         try {
-            refreshToken();
+            await refreshToken();
             const cleanContent = DOMPurify.sanitize(quillRef.current.getSemanticHTML());
             await axios.post(config["blog-backend"] + "/api/write", {
                 blogId: blogId.current,

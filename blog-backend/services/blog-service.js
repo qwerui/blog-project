@@ -128,7 +128,7 @@ router.get("/search",
         }
 
         const articles = await db.normalQuery(async (pool)=>{
-            const [rows] = await pool.query("SELECT a.article_id, b.id, a.create_time, a.title FROM article a INNER JOIN blog b WHERE a.title LIKE ?", [`%${req.query.search}%`]);
+            const [rows] = await pool.query("SELECT a.article_id, b.id, a.create_time, a.title FROM article a INNER JOIN blog b WHERE a.title LIKE ? AND a.deleted = FALSE", [`%${req.query.search}%`]);
             return rows;
         });
 
