@@ -9,6 +9,8 @@ const router = express.Router();
 router.get("/list",
     [
         query("id").trim().notEmpty(),
+        query("page").isNumeric(),
+        query("categoryId").isNumeric()
     ],
     async (req, res)=>{
         const validation = validationResult(req);
@@ -18,7 +20,7 @@ router.get("/list",
             return;
         }
 
-        const page = req.query.page ? req.query.page : 0;
+        const page = req.query.page < 0 ? req.query.page : 0;
 
         const articleCount = await db.normalQuery(async (pool)=>{
             const [rows, fields] = await pool.query("SELECT b.blog_id AS blog_id, COUNT(*) AS article_count FROM article a INNER JOIN blog b ON a.blog_id = b.blog_id WHERE b.id = ? AND deleted = FALSE GROUP BY b.blog_id", [req.query.id]);
