@@ -70,6 +70,8 @@ router.get("/",
     ],
     async (req, res, next) => {
         try {
+            const validation = validationResult(req);
+            
             if (!validation.isEmpty()) {
                 res.status(400).send("Request not valid");
                 return;
@@ -88,7 +90,7 @@ router.get("/",
         } catch (err) {
             next(err);
         }
-        const validation = validationResult(req);
+        
 
 
 
