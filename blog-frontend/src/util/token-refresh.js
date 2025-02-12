@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "data/store";
-import { refresh } from "data/login-store";
+import { refresh, logout } from "data/login-store";
 import { jwtDecode } from "jwt-decode";
 import config from 'config.json';
 
@@ -25,6 +25,9 @@ const refreshToken = async () => {
         }
     } catch (error) {
         console.error("Token refresh error : ", error);
+        store.dispatch(logout());
+        alert("부적절한 이용이 감지되었습니다. 다시 로그인 해주세요");
+        window.location.href = "/";
         return;
     }
 }
