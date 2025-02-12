@@ -39,7 +39,9 @@ const blogList = function BlogList() {
                 setListOption(response.data.articles);
                 totalPage.current = response.data.totalPage;
                 setPagination(getPaginationNumbers(page.current, totalPage.current));
+                
             } catch (err) {
+                console.log(err);
                 if (err.status === 404) {
                     setIsEmpty(true);
                 }

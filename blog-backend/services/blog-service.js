@@ -2,15 +2,15 @@ import mysql from 'mysql2/promise';
 import express from 'express';
 import db from './db.js';
 
-import { body, query, validationResult } from 'express-validator';
+import { body, oneOf, query, validationResult } from 'express-validator';
 
 const router = express.Router();
 
 router.get("/list",
     [
         query("id").trim().notEmpty(),
-        query("page").isNumeric(),
-        query("categoryId").isNumeric()
+        oneOf([query("page").isEmpty(), query("page").isNumeric()]),
+        oneOf([query("categoryId").isNumeric(), query("categoryId").isEmpty()])
     ],
     async (req, res, next) => {
         try {
@@ -21,7 +21,7 @@ router.get("/list",
                 return;
             }
 
-            const page = req.query.page < 0 ? req.query.page : 0;
+            const page = req.query.page ? req.query.page : 0;
 
 
             const articleCount = await db.normalQuery(async (pool) => {

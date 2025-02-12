@@ -31,8 +31,6 @@ const blogNav = function BlogNav() {
             setNickname(response.data.nickname);
             setDescription(response.data.description ?? response.data.nickname+"의 블로그입니다.");
             setCategory(response.data.category);
-
-            console.log(response.data);
         }
         fetch();
     }, [location.pathname]);

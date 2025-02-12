@@ -48,6 +48,7 @@ const blogConfig = function BlogConfig() {
         await refreshToken();
         
         try {
+            console.log(title, before.blog_id);
             await axios.put(config["blog-backend"] + "/api/config", {
                 blogId: before.blog_id,
                 title: title,
@@ -65,7 +66,7 @@ const blogConfig = function BlogConfig() {
         );
 
         alert("저장되었습니다.");
-        navigate("/blog/index/"+loginId);
+        navigate("/blog/"+loginId+"/list");
 
         } catch {
             alert("블로그 설정 중 오류가 발생했습니다.");
@@ -96,7 +97,7 @@ const blogConfig = function BlogConfig() {
     return (
         <>
             <h2 className='mb-3'>블로그 설정</h2>
-            <Form>
+            <Form onSubmit={updateConfig}>
                 <Form.Group className="mb-3" controlId="blogTitle">
                     <Form.Label>블로그 제목</Form.Label>
                     <Form.Control type="text" value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="제목을 입력해주세요" />
@@ -125,9 +126,9 @@ const blogConfig = function BlogConfig() {
                     </li>
                 )})}    
                 </ul>
+                <hr/>
+                <Button className='w-100' type='submit'>저장</Button>
             </Form>
-            <hr/>
-            <Button className='w-100' onClick={updateConfig}>저장</Button>
         </>
     )
 }
