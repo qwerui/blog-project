@@ -32,14 +32,14 @@ const blogList = function BlogList() {
                 const response = await axios.get(config["blog-backend"] + "/api/blog/list", {
                     params: {
                         id: id.current,
-                        category: category.current,
+                        categoryId: category.current,
                         page: page.current
                     }
                 });
                 setListOption(response.data.articles);
                 totalPage.current = response.data.totalPage;
                 setPagination(getPaginationNumbers(page.current, totalPage.current));
-                
+                setIsEmpty(false);
             } catch (err) {
                 console.log(err);
                 if (err.status === 404) {

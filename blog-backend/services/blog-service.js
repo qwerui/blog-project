@@ -23,18 +23,25 @@ router.get("/list",
 
             const page = req.query.page ? req.query.page : 0;
 
-
             const articleCount = await db.normalQuery(async (pool) => {
-                const [rows, fields] = await pool.query("SELECT b.blog_id AS blog_id, COUNT(*) AS article_count FROM article a INNER JOIN blog b ON a.blog_id = b.blog_id WHERE b.id = ? AND deleted = FALSE GROUP BY b.blog_id", [req.query.id]);
-
-                if (rows.length == 0) {
-                    return null;
+                if(req.query.categoryId == null){
+                    const [rows, fields] = await pool.query(
+                        "SELECT b.blog_id AS blog_id, COUNT(a.article_id) AS article_count "+
+                        "FROM blog b LEFT OUTER JOIN article a ON a.blog_id = b.blog_id AND deleted = FALSE "+
+                        "WHERE b.id = ? GROUP BY b.blog_id", [req.query.id]);
+    
+                    return rows[0];
+                } else {
+                    const [rows, fields] = await pool.query(
+                        "SELECT b.blog_id AS blog_id, COUNT(a.article_id) AS article_count "+
+                        "FROM blog b LEFT OUTER JOIN article a ON a.blog_id = b.blog_id AND a.category_id = ? AND deleted = FALSE "+
+                        "WHERE b.id = ? GROUP BY b.blog_id", [req.query.categoryId, req.query.id]);
+    
+                    return rows[0];
                 }
-                return rows[0];
             });
-
-
-            if (articleCount == null) {
+            
+            if (articleCount.article_count == 0) {
                 res.status(404).send();
                 return;
             }
@@ -83,6 +90,7 @@ router.get("/article",
                 res.status(400).send("Request not valid");
                 return;
             }
+
             const article = await db.normalQuery(async (pool) => {
                 const [rows, fields] = await pool.query(
                     "SELECT a.content, a.create_time, a.title, b.id, c.name as category_name, c.category_id " +
