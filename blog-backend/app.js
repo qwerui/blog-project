@@ -39,7 +39,7 @@ app.use(async (req, res, next) => {
         return;
     }
 
-    const jwt = req.header("Authorization");
+    const jwt = req.header("Authorization")?.split(" ")[1];
 
     if(!jwt) {
         res.status(401).send("Token is not exist");
@@ -63,6 +63,15 @@ app.use(async (req, res, next) => {
 app.use("/api/blog", blogRouter);
 app.use("/api/config", configRouter);
 app.use("/api/write", writeRouter);
+
+app.use((err, req, res, next)=>{
+    if(err.customCode === "DB Error"){
+        console.log("DB Error : ", err);
+        res.status(500).send();
+    } else {
+        next(err);
+    }
+});
 
 app.use((err, req, res, next)=>{
     console.log("Unexpected Error : ", err);

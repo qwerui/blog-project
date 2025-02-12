@@ -9,7 +9,7 @@ export const loginSlice = createSlice({
   },
   reducers: {
     login: (state, action) => {
-      state.token = action.payload.token;
+      state.token = "Bearer "+action.payload.token;
       state.id = action.payload.id;
       state.isLogin = true;
     },

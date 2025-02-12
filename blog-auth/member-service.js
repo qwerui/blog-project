@@ -26,7 +26,7 @@ export default {
             await conn.commit();
             return result;
         } catch (err) {
-            console.log("DB Error : ", err);
+            err.customCode = "DB Error";
             await conn.rollback();
             throw err;
         } finally {
@@ -37,7 +37,7 @@ export default {
         try {
             return await callback(this.pool);
         } catch (err) {
-            console.log("DB Error : ", err);
+            err.customCode = "DB Error";
             throw err;
         }
     },
