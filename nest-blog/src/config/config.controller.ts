@@ -7,11 +7,11 @@ export class ConfigController {
 
     @Put()
     updateConfig() {
-
+        return this.configService.updateConfig();
     }
 
     @Get()
     getConfig() {
-        
+        return this.configService.getConfig();
     }
 }

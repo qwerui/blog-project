@@ -7,21 +7,21 @@ export class BlogController {
 
     @Get('list')
     getList(){
-
+        return this.blogService.getList();
     }
 
     @Get('article')
     getArticle(){
-
+        return this.blogService.getArticle();
     }
 
     @Get('info')
     getInfo(){
-
+        return this.blogService.getInfo();
     }
 
     @Get('search')
     search(){
-        
+        return this.blogService.search();
     }
 }

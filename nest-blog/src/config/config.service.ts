@@ -1,4 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class ConfigService {}
+export class ConfigService {
+
+    updateConfig() {
+
+    }
+
+    getConfig() {
+
+    }
+}

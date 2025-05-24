@@ -7,26 +7,26 @@ export class WriteController {
 
     @Post()
     createArticle(){
-
+        return this.writeService.createArticle
     }
 
     @Put()
     updateArticle(){
-
+        return this.writeService.updateArticle();
     }
 
     @Delete()
     deleteArticle(){
-
+        return this.writeService.deleteArticle();
     }
 
     @Post('image')
     uploadImage(){
-
+        return this.writeService.uploadImage();
     }
 
     @Get('category')
     getCategory(){
-
+        return this.writeService.getCategory();
     }
 }
