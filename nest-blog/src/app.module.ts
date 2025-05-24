@@ -7,7 +7,6 @@ import { ConfigController } from './config/config.controller';
 import { WriteService } from './write/write.service';
 import { WriteController } from './write/write.controller';
 import { BlogService } from './blog/blog.service';
-import { BlogController } from './blog/blog.controller';
 
 @Module({
   imports: [],
