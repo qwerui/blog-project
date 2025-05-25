@@ -11,13 +11,14 @@ async function bootstrap() {
     key: fs.readFileSync('./key.pem'),
     cert: fs.readFileSync('./cert.pem'),
   }
-  
+
   const app = await NestFactory.create(AppModule, {
     httpsOptions: httpsOptions
   });
 
   // 입력값 검증
   app.useGlobalPipes(new ValidationPipe());
+  
   app.use(cookieParser());
 
   app.enableCors({
