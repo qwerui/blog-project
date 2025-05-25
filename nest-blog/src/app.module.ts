@@ -9,6 +9,7 @@ import { WriteController } from './write/write.controller';
 import { BlogService } from './blog/blog.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 const mysql = TypeOrmModule.forRoot({
   type: 'mysql',
@@ -22,7 +23,7 @@ const mysql = TypeOrmModule.forRoot({
 });
 
 @Module({
-  imports: [mysql, ConfigModule.forRoot()],
+  imports: [mysql, ConfigModule.forRoot(), AuthModule],
   controllers: [AppController, BlogController, WriteController, ConfigController],
   providers: [AppService, BlogService, WriteService, ConfigService],
 })
