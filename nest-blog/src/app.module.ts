@@ -10,6 +10,9 @@ import { BlogService } from './blog/blog.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { Article } from './entity/article.entity';
+import { Blog } from './entity/blog.entity';
+import { Category } from './entity/category.entity';
 
 const mysql = TypeOrmModule.forRoot({
   type: 'mysql',
@@ -18,7 +21,7 @@ const mysql = TypeOrmModule.forRoot({
   username: 'root',
   password: 'root',
   database: 'blog',
-  entities: [],
+  entities: [Article, Blog, Category],
   synchronize: true,
 });
 
