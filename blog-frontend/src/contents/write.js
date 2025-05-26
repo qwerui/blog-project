@@ -35,7 +35,7 @@ const blogWrite = function BlogWrite() {
                 }
             });
 
-            blogId.current = response.data.blog_id;
+            blogId.current = response.data.blogId;
             setCategory(response.data.category);
         }
         fetch();
