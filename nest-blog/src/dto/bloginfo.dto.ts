@@ -1,7 +1,7 @@
 import { CategoryClass } from "./category.class";
 
-export class ConfigDto {
-    blog_id: string;
+export class BlogInfoDto {
+    blogId: string;
     title: string;
     id: string;
     description: string;
