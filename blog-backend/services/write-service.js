@@ -118,7 +118,7 @@ router.get("/category",
                 const [rows] = await pool.query("SELECT blog_id FROM blog WHERE id = ?", [req.query.id]);
                 const [categories] = await pool.query("SELECT category_id, name FROM category WHERE blog_id = ?", [rows[0].blog_id]);
                 return {
-                    blogId: rows[0].blogId,
+                    blog_id: rows[0].blog_id,
                     category: categories
                 }
             });

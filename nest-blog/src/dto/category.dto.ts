@@ -1,4 +1,4 @@
 export class CategoryDto {
-    blogId: string;
+    blog_id: string;
     category: Array<[number, string]>;
 }
