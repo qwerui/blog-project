@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 @Entity()
 export class Blog {
     @PrimaryColumn()
-    blogId: string;
+    blog_id: string;
     
     @Column()
     title: string;
@@ -15,5 +15,5 @@ export class Blog {
     description: string;
 
     @Column()
-    image: string;
+    image?: string;
 }

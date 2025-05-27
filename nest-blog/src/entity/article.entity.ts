@@ -3,22 +3,22 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 @Entity()
 export class Article {
     @PrimaryColumn()
-    articleId: string;
+    article_id: string;
 
     @Column()
     title: string;
     
     @Column()
-    blogId: string;
+    blog_id: string;
     
     @Column()
     content: string;
     
     @Column()
-    createTime: Date;
+    create_time: Date;
     
     @Column()
-    categoryId: number;
+    category_id: number;
 
     @Column()
     deleted: boolean;

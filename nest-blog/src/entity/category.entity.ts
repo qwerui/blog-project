@@ -1,13 +1,13 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Category {
     
-    @PrimaryColumn()
-    categoryId: number;
+    @PrimaryGeneratedColumn()
+    category_id: number;
     
     @PrimaryColumn()
-    blogId: string;
+    blog_id: string;
     
     @Column()
     name: string;
