@@ -1,5 +1,6 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Controller, Delete, FileTypeValidator, Get, ParseFilePipe, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { WriteService } from './write.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('write')
 export class WriteController {
@@ -21,8 +22,9 @@ export class WriteController {
     }
 
     @Post('image')
-    uploadImage(){
-        return this.writeService.uploadImage();
+    @UseInterceptors(FileInterceptor('file'))
+    uploadImage(@UploadedFile(new ParseFilePipe({validators:[new FileTypeValidator({fileType:/^image\/.*/})]})) file: Express.Multer.File){
+        
     }
 
     @Get('category')

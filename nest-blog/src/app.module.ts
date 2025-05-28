@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { Article } from './entity/article.entity';
 import { Blog } from './entity/blog.entity';
 import { Category } from './entity/category.entity';
+import { MulterModule } from '@nestjs/platform-express';
 
 const mysql = TypeOrmModule.forRoot({
   type: 'mysql',
@@ -25,8 +26,13 @@ const mysql = TypeOrmModule.forRoot({
   synchronize: true,
 });
 
+const multer = MulterModule.register({
+  dest: './public/images/article',
+});
+
+
 @Module({
-  imports: [mysql, ConfigModule.forRoot(), AuthModule],
+  imports: [mysql, ConfigModule.forRoot(), AuthModule, multer],
   controllers: [AppController, BlogController, WriteController, ConfigController],
   providers: [AppService, BlogService, WriteService, ConfigService],
 })
