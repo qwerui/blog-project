@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { BlogService } from './blog.service';
 
 @Controller('blog')
@@ -6,22 +6,22 @@ export class BlogController {
     constructor(private readonly blogService: BlogService) {}
 
     @Get('list')
-    getList(){
-        return this.blogService.getList();
+    getList(@Query('id') id: string, @Query('page') page: number, @Query('categoryId') categoryId: number){
+        return this.blogService.getList(id, page, categoryId);
     }
 
     @Get('article')
-    getArticle(){
-        return this.blogService.getArticle();
+    getArticle(@Query('articleId') articleId: string){
+        return this.blogService.getArticle(articleId);
     }
 
     @Get('info')
-    getInfo(){
-        return this.blogService.getInfo();
+    getInfo(@Query('id') id: string){
+        return this.blogService.getInfo(id);
     }
 
     @Get('search')
-    search(){
-        return this.blogService.search();
+    search(@Query('search') search: string){
+        return this.blogService.search(search);
     }
 }

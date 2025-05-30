@@ -10,7 +10,7 @@ export class ConfigService {
     constructor(@InjectRepository(Blog) private blogRepository: Repository<Blog>,
                 @InjectRepository(Category) private categoryRepository: Repository<Category>){}
 
-    async updateConfig(blogId: string, title: string, description: string, imagePath: string, deleteCategory: Array<number>, newCategory: Array<string>) {
+    async updateConfig(blogId: string, title: string, description: string, imagePath: string, deleteCategory?: Array<number>, newCategory?: Array<string>) {
         const blog = await this.blogRepository.findOne({
             where: {
                 blog_id: blogId
@@ -40,13 +40,6 @@ export class ConfigService {
             });
             this.categoryRepository.save(batch);
         }
-
-                    //     if (req.file != null) {
-                    //         await conn.query(
-                    //             "UPDATE blog SET image=? WHERE blog_id=?",
-                    //             [imagePath + req.file.filename, req.body.blogId]
-                    //         )
-                    //     }
     }
 
     async getConfig(userId: string) {

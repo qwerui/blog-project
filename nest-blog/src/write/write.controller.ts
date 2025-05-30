@@ -1,34 +1,39 @@
-import { Controller, Delete, FileTypeValidator, Get, ParseFilePipe, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, FileTypeValidator, Get, ParseFilePipe, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { WriteService } from './write.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { JwtAuthGuard } from 'src/auth/jwt.guard';
 
 @Controller('write')
 export class WriteController {
     constructor(private readonly writeService: WriteService){}
 
     @Post()
-    createArticle(){
-        return this.writeService.createArticle
+    @UseGuards(JwtAuthGuard)
+    createArticle(@Body('blogId') blogId: string, @Body('title') title: string, @Body('category') category: number, @Body('content') content: string){
+        return this.writeService.createArticle(blogId, title, category, content);
     }
 
     @Put()
-    updateArticle(){
-        return this.writeService.updateArticle();
+    @UseGuards(JwtAuthGuard)
+    updateArticle(@Body('blogId') blogId: string, @Body('title') title: string, @Body('category') category: number, @Body('content') content: string, @Body('articleId') articleId: string){
+        return this.writeService.updateArticle(blogId, title, category, content, articleId);
     }
 
     @Delete()
-    deleteArticle(){
-        return this.writeService.deleteArticle();
+    @UseGuards(JwtAuthGuard)
+    deleteArticle(@Body('articleId') articleId: string){
+        return this.writeService.deleteArticle(articleId);
     }
 
     @Post('image')
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('file'))
     uploadImage(@UploadedFile(new ParseFilePipe({validators:[new FileTypeValidator({fileType:/^image\/.*/})]})) file: Express.Multer.File){
         
     }
 
     @Get('category')
-    getCategory(){
-        return this.writeService.getCategory();
+    getCategory(@Query('id') id: string){
+        return this.writeService.getCategory(id);
     }
 }
