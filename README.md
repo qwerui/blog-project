@@ -7,5 +7,5 @@
 - 입력 값 검증
 - 라이브러리 사용으로 툴 없이 JWT 구현
 
-### 2025.05.22 ~
-- blog-backend를 nest로 변환 중 (nest-blog)
+### 2025.05.22 ~ 2025.05.31
+- blog-backend를 nest로 변환 (nest-blog)
