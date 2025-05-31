@@ -12,7 +12,7 @@ export default {
             host: "localhost",
             port: 3306,
             user: "root",
-            password: "blogmysql",
+            password: "root",
             database: "blog"
         });
     },
@@ -58,7 +58,13 @@ export default {
         const hashedPassword = await bcrypt.hash(body.password, saltRounds);
 
         await this.transactionQuery(async (conn)=>{
-            await conn.query("INSERT INTO member VALUES(?, ?, ?)", [body.id, body.nickname, hashedPassword]);
+            const [results, fields] = await conn.query(
+                "SELECT 1 FROM member WHERE id = ?",
+                [body.id]);
+            if(results.length > 0) {
+                throw new Error("Member Already Exists");
+            }
+            await conn.query("INSERT INTO member(id, nickname, password) VALUES(?, ?, ?)", [body.id, body.nickname, hashedPassword]);
             await conn.query("INSERT INTO blog(blog_id, id) VALUES(?, ?)", [v7(), body.id]);
         });
     },

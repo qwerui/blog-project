@@ -33,6 +33,7 @@ export const Login = ({ show, close, toSignUp }) => {
             id: formData.get("id")
         }));
       }catch(err){
+        console.log(err);
         alert("로그인 실패");
         return;
       }
