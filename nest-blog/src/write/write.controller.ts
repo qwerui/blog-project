@@ -27,7 +27,7 @@ export class WriteController {
 
     @Post('image')
     @UseGuards(JwtAuthGuard)
-    @UseInterceptors(FileInterceptor('file'))
+    @UseInterceptors(FileInterceptor('image'))
     uploadImage(@UploadedFile(new ParseFilePipe({validators:[new FileTypeValidator({fileType:/^image\/.*/})]})) file: Express.Multer.File){
         
     }

@@ -65,12 +65,12 @@ export class WriteService {
                 name: true
             },
             where: {
-                blog_id: blog.id
+                blog_id: blog.blog_id
             }
         });
 
         return {
-            blog_id: blog.id,
+            blog_id: blog.blog_id,
             category: categories
         }
     }
