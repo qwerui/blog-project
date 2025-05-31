@@ -49,6 +49,7 @@ const blogConfig = function BlogConfig() {
         
         try {
             console.log(title, before.blog_id);
+            console.log(blogImage);
             await axios.put(config["blog-backend"] + "/api/config", {
                 blogId: before.blog_id,
                 title: title,
@@ -68,7 +69,8 @@ const blogConfig = function BlogConfig() {
         alert("저장되었습니다.");
         navigate("/blog/"+loginId+"/list");
 
-        } catch {
+        } catch(err) {
+            console.log(err);
             alert("블로그 설정 중 오류가 발생했습니다.");
         }
     }
@@ -108,7 +110,7 @@ const blogConfig = function BlogConfig() {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="blogPicture">
                     <Form.Label>블로그 프로필 사진</Form.Label>
-                    <Form.Control type="file" />
+                    <Form.Control type="file" name="image"/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="blogCategory">
                     <Form.Label className='d-block'>블로그 카테고리</Form.Label>

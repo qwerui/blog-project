@@ -17,10 +17,9 @@ const refreshToken = async () => {
     
     try {
         const { exp } = jwtDecode(access);
-
+        
         if (exp < Math.floor(Date.now() / 1000)){
             const newToken = await axios.post(config["auth-backend"]+"/auth/refresh",{id:loginId},{withCredentials: true});
-
             store.dispatch(refresh(newToken.data));
         }
     } catch (error) {
