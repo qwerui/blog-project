@@ -6,7 +6,7 @@ export class BlogController {
     constructor(private readonly blogService: BlogService) {}
 
     @Get('list')
-    getList(@Query('id') id: string, @Query('page') page: number, @Query('categoryId') categoryId: number){
+    getList(@Query('id') id: string, @Query('page') page: number, @Query('categoryId') categoryId?: number){
         return this.blogService.getList(id, page, categoryId);
     }
 

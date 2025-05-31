@@ -136,8 +136,12 @@ export class BlogService {
         });
 
         const category = await this.categoryRepository.find({
+            select: {
+                category_id: true,
+                name: true
+            },
             where: {
-                blog_id: id
+                blog_id: blog.blog_id
             }
         });
 
