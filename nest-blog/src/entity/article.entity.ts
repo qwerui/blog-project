@@ -17,7 +17,7 @@ export class Article {
     @Column()
     create_time: Date;
     
-    @Column()
+    @Column({nullable: true})
     category_id: number;
 
     @Column()

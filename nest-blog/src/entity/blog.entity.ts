@@ -5,15 +5,15 @@ export class Blog {
     @PrimaryColumn()
     blog_id: string;
     
-    @Column()
+    @Column({nullable: true})
     title: string;
 
     @Column()
     id: string;
 
-    @Column()
+    @Column({nullable: true})
     description: string;
 
-    @Column()
-    image?: string;
+    @Column({nullable: true})
+    image: string;
 }
