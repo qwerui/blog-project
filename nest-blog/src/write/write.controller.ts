@@ -28,8 +28,8 @@ export class WriteController {
     @Post('image')
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('image'))
-    uploadImage(@UploadedFile(new ParseFilePipe({validators:[new FileTypeValidator({fileType:/^image\/.*/})]})) file: Express.Multer.File){
-        
+    uploadImage(@UploadedFile() file: Express.Multer.File){
+        return "public/images/article/"+file.filename;
     }
 
     @Get('category')

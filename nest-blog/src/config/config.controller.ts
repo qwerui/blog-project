@@ -42,9 +42,6 @@ export class ConfigController {
         }
 
         const imagePath = image ? '/public/images/profile/' + image.filename : null;
-        console.log(configReq);
-        console.log(profileImagePath);
-        console.log(imagePath);
         this.configService.updateConfig(configReq.blogId, configReq.title, configReq.description, imagePath, configReq.deleteCategory, configReq.newCategory);
     }
 
