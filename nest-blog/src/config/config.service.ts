@@ -24,14 +24,16 @@ export class ConfigService {
             blog.image = imagePath;
         }
 
-        if(deleteCategory.length > 0) {
+        this.blogRepository.save(blog);
+
+        if(deleteCategory?.length > 0) {
             this.categoryRepository.delete({
                 blog_id: blogId,
                 category_id: In(deleteCategory)
             });
         }
 
-        if(newCategory.length > 0) {
+        if(newCategory?.length > 0) {
             const batch = newCategory.map(item => {
                 const result = new Category();
                 result.blog_id = blogId;

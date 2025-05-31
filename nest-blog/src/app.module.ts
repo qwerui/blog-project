@@ -14,6 +14,9 @@ import { Article } from './entity/article.entity';
 import { Blog } from './entity/blog.entity';
 import { Category } from './entity/category.entity';
 import { MulterModule } from '@nestjs/platform-express';
+import { Member } from './entity/member.entity';
+import { Type } from 'class-transformer';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 const mysql = TypeOrmModule.forRoot({
   type: 'mysql',
@@ -22,8 +25,15 @@ const mysql = TypeOrmModule.forRoot({
   username: 'root',
   password: 'root',
   database: 'blog',
-  entities: [Article, Blog, Category],
+  entities: [Article, Blog, Category, Member],
   synchronize: true,
+});
+
+const mysqlFeature = TypeOrmModule.forFeature([Article, Blog, Category, Member]);
+
+const staticAssets = ServeStaticModule.forRoot({
+  rootPath: './public',
+  serveRoot: '/public',
 });
 
 const multer = MulterModule.register({
@@ -32,7 +42,7 @@ const multer = MulterModule.register({
 
 
 @Module({
-  imports: [mysql, ConfigModule.forRoot(), AuthModule, multer],
+  imports: [mysql, ConfigModule.forRoot(), AuthModule, multer, mysqlFeature, staticAssets],
   controllers: [AppController, BlogController, WriteController, ConfigController],
   providers: [AppService, BlogService, WriteService, ConfigService],
 })
